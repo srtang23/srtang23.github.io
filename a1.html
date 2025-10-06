@@ -43,7 +43,7 @@
         // storing the total number of LEDs as a variable
         int total = 3;
 
-        // the setup function runs once when you press reset or power the board
+        // runs once when the Arduino is powered or reset and initializes the LED pins as outputs
         void setup() {
           // looping through each LED pin
           for (int i = 0; i < total; i++) {
@@ -52,9 +52,9 @@
           }
         }
 
-        // the loop function is allowing each LED to blink 5 times with 1000ms delay
+        // repeatedly cycles through each LED, blinking them in sequence with 1000 ms delays
         void loop() {
-          // Loop through each LED in the array
+          // loop through each LED in the array
           for (int i = 0; i < total; i++) {
             // turning the current LED (leds[i]) on by setting pin to HIGH voltage
             digitalWrite(leds[i], HIGH);
