@@ -4,15 +4,107 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Sophia's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
-    <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 1!</p>
+    <h1>Sophia's Assignment 1!</h1>
+
+    <div class="schematic">
+      <h2>Schematic</h2>
+      <img src="images/schematic_a1.jpeg">
+      <p>
+        While using red LEDs, I started with 5V output and my desired current for each LED is around 20 mA.
+        To calculate the appropriate resistor value, I used Ohm's Law R = V / I.
+        R = (5 V - 1.8 V) / 20 mA = 160 Ω, meaning that the resistor should be at least greater than 160 Ω,
+        so I picked a 220 Ω resistor as it's the closest resistor I have and still keeps the LEDd with a decent brightness.
+      </p>
     </div>
+
+    <div class="circuit">
+      <h2>Circuit</h2>
+      <img src="images/circuit_a1.JPG">
+      <p>
+        I wired 3 red LEDs in parallel, each with its own 220 Ω resistor, all connected back to the same ground.
+      </p>
+      <img src="images/circuit_operation_a1.GIF">
+      <p>
+        Each LED lights up sequentially, first on pin 3, then pin 7, and finally pin 10.
+      </p>
+    </div>
+
+    <div class="firmware">
+      <h2>Firmware</h2>
+      <a href="a1_blink.ino">Arduino Sketch for A1 Blink</a>
+      <pre><code>
+        // declaring an array of LED pin numbers
+        int leds[] = {3, 7, 10};
+        // storing the total number of LEDs as a variable
+        int total = 3;
+
+        // the setup function runs once when you press reset or power the board
+        void setup() {
+          // looping through each LED pin
+          for (int i = 0; i < total; i++) {
+            // setting each LED pin as an OUTPUT
+            pinMode(leds[i], OUTPUT);
+          }
+        }
+
+        // the loop function is allowing each LED to blink 5 times with 1000ms delay
+        void loop() {
+          // Loop through each LED in the array
+          for (int i = 0; i < total; i++) {
+            // turning the current LED (leds[i]) on by setting pin to HIGH voltage
+            digitalWrite(leds[i], HIGH);
+            // wait 1000ms while the LED stays on
+            delay(1000);
+            // turning the current LED (leds[i]) off by setting pin to LOW voltage
+            digitalWrite(leds[i], LOW);
+            // wait 1000ms while the LED stays off
+            delay(1000);
+          }
+        }
+      </code></pre>
+    </div>
+
+    <div class="questions">
+      <h2>Questions</h2>
+      <ol>
+        <div>
+          <strong><li>Draw a graph where the X axis is time and the Y axis is voltage across the LEDs. Draw a line for each of your 3 LEDs.</li></strong>
+          <img src="images/led_voltage_time_graph.jpeg">
+          <p>
+            In my for loop, I programmed the LEDs to light up sequentially in the order of pin 3, pin 7, and pin 10.
+            I used a delay of 1000 ms to keep each LED on for one second, followed by another 1000 ms delay while it stays off.
+            Therefore, each LED alternates between 0 V (off) and 5 V (on) for 1000 ms at a time, blinking one after another.
+            LED 3 first, then LED 7, then LED 10, repeating every 6000 ms.
+          </p>
+        </div>
+
+        <div>
+          <strong><li>How many LEDs could you blink independently with your Arduino? How much current would that draw?</li></strong>
+          <p>
+            The Arduino Uno has 14 digital pins, along with 6 analog pins, giving a total of 20 possible connections for LEDs to blink independently.
+            Since the LEDs are wired in parallel, the overall current draw would just be the sum of the current through each LED.
+            Considering there is a max current of 200 mA for arduino, we will need to use a higher resistor for
+            Assuming red LEDs with a forward voltage of 1.8 V and 220 Ω resistors for all LEDs: the current for each LED is (5.0 V - 1.8 V) / 220 Ω ≈ 14.5 mA.
+            With 20 available pins, the total current is 20 * 14.5 mA, which is approximately 290 mA.
+          </p>
+        </div>
+
+        <div>
+          <strong><li>How fast do you need to blink your LEDs until you no longer can tell that they are blinking?</li></strong>
+          <p>If you set the delay to be under 4ms, running the blink function would be hard to tell if it's blinking or just lighted up at all times.</p>
+        </div>
+
+        <div>
+          <strong><li>Did you use AI tools in completing this assignment? If yes, please provide details on how/when, as well as a brief reflection. If no, you can either leave this question blank, or provide other information if you'd like.</li></strong>
+          <p>I asked ChatGPT about some html elements to help write this page, like for code snippet using <code>&lt;code&gt;</code> and <code>&lt;pre&gt;</code>.</p>
+        </div>
+      </ol>
+    </div>
+
   </body>
 </html>
