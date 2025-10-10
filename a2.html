@@ -4,15 +4,119 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Sophia's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 2!</h1>
-    <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 2!</p>
+    <div class="back-button">
+      <a href="index.html">Back</a>
+    </div>
+    <h1>A2: Fade</h1>
+
+    <div class="schematic">
+      <h2>Schematic</h2>
+      <img src="images/schematic_a2.jpeg">
+      <p>
+        This circuit uses a pushbutton to control an RGB LED through the Arduino.
+        The pushbutton is connected to 5V power and pin 2, with a 10k Ω resistor connected to ground.
+        The RGB LED is wired so that each color (red, green, and blue)
+        is connected to a different pin on the Arduino (pins 11, 10, and 9).
+        Each color also has its own resistor to limit current: 220 Ω for red and green,
+        and 100 Ω for blue to make the brightness more balanced. The RGB LED shares the same ground with the pushbutton.
+      </p>
+      <h3>Calculation for resistors</h3>
+      <ol>
+        <li>
+          <p>
+            <strong>LEDs - </strong> With a 5 V supply and a desired current of 20 mA,
+            and given that red and green LEDs both have a voltage drop of 1.8 V,
+            and blue LED with a higher voltage drop of 3.3 V:
+          </p>
+          <ul>
+            <li>Red LED:  R = (5 V - 1.8 V) / 20 mA = 160 Ω</li>
+            <li>Green LED:  R = (5 V - 1.8 V) / 20 mA = 160 Ω</li>
+            <li>Blue LED:  R = (5 V - 3.3 V) / 20 mA = 85 Ω</li>
+          </ul>
+          <p>
+            So I chose a 220 Ω resistor for the red and green LEDs,
+            and a 100 Ω resistor for the blue LED, as these were the closest available values.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Pushbutton - </strong>
+          </p>
+        </li>
+      </ol>
+
+    </div>
+
+    <div class="circuit">
+      <h2>Circuit</h2>
+      <div class="circuit-images">
+        <div>
+          <img src="images/circuit_a2.JPG">
+          <p>Top view of the circuit showing the RGB LED and pushbutton connections.</p>
+        </div>
+        <div>
+          <img src="images/circuit_a2_topview.jpg">
+          <p>Side view of the circuit with all components properly connected.</p>
+        </div>
+      </div>
+      <img src="images/circuit_operation_a2.GIF">
+      <p>Demonstration of the RGB LED color fading when the pushbutton is pressed.</p>
+    </div>
+
+    <div class="firmware">
+      <h2>Firmware</h2>
+      <a href="a1_blink.ino">Arduino Sketch for A2 Fade</a>
+      <pre><code>
+      </code></pre>
+    </div>
+
+    <div class="questions">
+      <h2>Questions</h2>
+      <ol>
+        <div>
+          <strong><li>
+            Draw a chart where the X axis is time and the Y axis is voltage.
+            Draw 3 lines representing the voltage across an LED with analogWrite(led, 64), analogWrite(led, 128), and analogWrite(led, 255).
+          </li></strong>
+          <p></p>
+        </div>
+
+        <div>
+          <strong><li>
+            Given your schematic, circuit, and firmware, assuming the only thing that draws current is your LEDs,
+            how long would your circuit run if powered by a 1200 mAh battery?
+          </li></strong>
+          <p></p>
+        </div>
+
+        <div>
+          <strong><li>
+            Measure and record the actual voltage across one of your LEDs when it's on.
+            How does this compare to the theoretical forward voltage for your LED color?
+          </li></strong>
+          <p></p>
+        </div>
+
+        <div>
+          <strong><li>
+            Did you use AI tools in completing this assignment?
+            If yes, please provide details on how/when, as well as a brief reflection.
+            If no, you can either leave this question blank, or provide other information if you'd like.
+          </li></strong>
+          <p>
+            I used cursor.ai to help with the styling of the website.
+            Prompt: "help with the styling of this website,
+            adjust images to resonable sizing,
+            better layout,
+            use clean colors without changing any content in the website".
+          </p>
+        </div>
+      </ol>
     </div>
   </body>
 </html>
