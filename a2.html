@@ -25,7 +25,7 @@
         Each color also has its own resistor to limit current: 220 Ω for red and green,
         and 100 Ω for blue to make the brightness more balanced. The RGB LED shares the same ground with the pushbutton.
       </p>
-      <h3>Calculation for resistors</h3>
+      <h3>Resistor Calculation and Choices</h3>
       <ol>
         <li>
           <p>
@@ -45,8 +45,14 @@
         </li>
         <li>
           <p>
-            <strong>Pushbutton - </strong>
+            <strong>Pushbutton - </strong> I chose a 10k Ω resistor for the pushbutton
+            because it's in the middle range of typical resistor values,
+            providing just enough current to keep the input pin from floating
+            and prevent it from randomly picking up signals or charges from the air.
           </p>
+          <ul>
+            <li>I = 5 V / 10k Ω = 0.5 mA</li>
+          </ul>
         </li>
       </ol>
 
@@ -55,23 +61,102 @@
     <div class="circuit">
       <h2>Circuit</h2>
       <div class="circuit-images">
-        <div>
-          <img src="images/circuit_a2.JPG">
-          <p>Top view of the circuit showing the RGB LED and pushbutton connections.</p>
-        </div>
-        <div>
-          <img src="images/circuit_a2_topview.jpg">
-          <p>Side view of the circuit with all components properly connected.</p>
-        </div>
+        <img src="images/circuit_a2.JPG">
+        <img src="images/circuit_a2_topview.jpg">
+        <p>Side view and top view of the circuit showing the RGB LED and pushbutton connections.</p>
       </div>
+
       <img src="images/circuit_operation_a2.GIF">
-      <p>Demonstration of the RGB LED color fading when the pushbutton is pressed.</p>
+      <p>
+        Each press of the button cycles the LED through its modes,
+        starting from red and transitioning between green, blue, and a color fade.
+      </p>
     </div>
 
     <div class="firmware">
       <h2>Firmware</h2>
-      <a href="a1_blink.ino">Arduino Sketch for A2 Fade</a>
+      <a href="arduino/a2_fade.ino">Arduino Sketch for A2 Fade</a>
       <pre><code>
+const int buttonPin = 2;  // the number of the pushbutton pin
+const int redPin = 11;    // the number of the red LED pin
+const int greenPin = 10;  // the number of the green LED pin
+const int bluePin = 9;  // the number of the blue LED pin
+
+int count = -1; // mode counter; starts at -1 so first press makes it 0
+int buttonState;  // debounced reading of the pushbutton
+int lastButtonState = LOW; // last reading from the pushbutton
+
+unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
+unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
+
+// Set red, green, and blue LED pins as output, pushbutton pin as input
+void setup() {
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
+  pinMode(buttonPin, INPUT);
+}
+
+void loop() {
+  int reading = digitalRead(buttonPin); // reads the current state of the pushbutton
+
+  // if the reading changed from the last loop, reset the debounce timer
+  if (reading != lastButtonState) {
+    lastDebounceTime = millis();  // records the current time
+  }
+
+  // if the reading has exceeded the set debouce time
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    // if the button state has changed:
+    if (reading != buttonState) {
+
+      buttonState = reading; // updates the debounced button state
+
+      // checks if the pushbutton is pressed
+      if (buttonState == HIGH) {
+        count++;  // increment the counter by 1
+      }
+    }
+  }
+
+  // chooses LED color or fade colors based on count modulo 4
+  if (count % 4 == 0) {
+    setColor(255, 0, 0); // set LEDs to red (turn on by default)
+  } else if (count % 4 == 1) {
+    setColor(0, 255, 0); // set LEDs to green
+  } else if (count % 4 == 2) {
+    setColor(0, 0, 255); // set LEDs to blue
+  } else if (count % 4 == 3) {
+    fadeColors();        // color fading
+  }
+  // save the readingm next time through the loop, it'll be the lastButtonState:
+  lastButtonState = reading;
+}
+
+// takes three brightness values (0–255) and sets each LED color
+void setColor(int redVal, int greenVal, int blueVal) {
+  analogWrite(redPin, redVal);  // sets brightness of the red LED
+  analogWrite(greenPin, greenVal);  // sets brightness of the green LED
+  analogWrite(bluePin, blueVal);  // sets brightness of the blue LED
+}
+
+// gradually increases brightness of each LED color one after another
+void fadeColors() {
+  for(int i = 0; i < 256;i++){  // fade red LED from 0 to 255
+    analogWrite(redPin, i); // adjust red LED brightness
+    delay(10);  // short pause
+  }
+
+  for(int i = 0; i < 256;i++){  // fade green LED from 0 to 255
+    analogWrite(greenPin, i); // adjust green LED brightness
+    delay(10);  // short pause
+  }
+
+  for(int i = 0; i < 256;i++){  // fade blue LED from 0 to 255
+    analogWrite(bluePin, i);  // adjust blue LED brightness
+    delay(10);  // short pause
+  }
+}
       </code></pre>
     </div>
 
@@ -83,7 +168,16 @@
             Draw a chart where the X axis is time and the Y axis is voltage.
             Draw 3 lines representing the voltage across an LED with analogWrite(led, 64), analogWrite(led, 128), and analogWrite(led, 255).
           </li></strong>
-          <p></p>
+          <p>
+            Assuming a red LED with a forward voltage of approximately 1.8 V,
+            the graph shows how the voltage across the LED changes with different duty cycles:
+          </p>
+          <ul>
+            <li><code class="inline-code">analogWrite(64)</code> -> about 25% duty cycle (25% on, 75% off)</li>
+            <li><code class="inline-code">analogWrite(128)</code> -> about 50% duty cycle (50% on, 50% off)</li>
+            <li><code class="inline-code">analogWrite(255)</code> -> 100% duty cycle(100% on)</li>
+          </ul>
+          <img src="images/voltage_time_graph_a2.jpeg" class="graph">
         </div>
 
         <div>
@@ -91,7 +185,14 @@
             Given your schematic, circuit, and firmware, assuming the only thing that draws current is your LEDs,
             how long would your circuit run if powered by a 1200 mAh battery?
           </li></strong>
-          <p></p>
+          <p>
+            Since the RGB LEDs in my circuit are wired in parallel, the overall current draw is the sum of the current through each LED.
+            However, because I used a single RGB LED, only one color or a fading sequence runs at a time.
+          <ul>
+            <li>Assuming we're using the red light: (5 V - 1.8 V) / 220 Ω ≈ 14.5 mA</li>
+            <li>With a 1200 mAh battery: 1200 mAh / 14.5 mA ≈ <strong>82.8 hrs</strong></li>
+          </ul>
+
         </div>
 
         <div>
@@ -99,7 +200,10 @@
             Measure and record the actual voltage across one of your LEDs when it's on.
             How does this compare to the theoretical forward voltage for your LED color?
           </li></strong>
-          <p></p>
+          <p>
+            I measured the actual voltage of the red pin using a multimeter,
+            and it's around 1.868 V, which is very close to the theoretical forward voltage of 1.8 V for a red LED.
+          </p>
         </div>
 
         <div>
@@ -109,12 +213,13 @@
             If no, you can either leave this question blank, or provide other information if you'd like.
           </li></strong>
           <p>
+            I didn't use AI for any context of this assignment but
             I used cursor.ai to help with the styling of the website.
             Prompt: "help with the styling of this website,
             adjust images to resonable sizing,
             better layout,
             use clean colors without changing any content in the website".
-            I also used ChatGPT to help debug as the styling wasn't working as expected on GitHub Pages.
+            I also used ChatGPT and cursor.ai to help debug as the styling wasn't updated on GitHub Pages.
           </p>
         </div>
       </ol>
