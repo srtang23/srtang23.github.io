@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Sophia's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div class="back-button">
+      <a href="index.html">Back</a>
+    </div>
+    <h1>A3: Input Output</h1>
+
+    <div class="schematic">
+      <h2>Schematic</h2>
+      <img src="images/schematic_a2.jpeg">
+
+    </div>
+
+    <div class="circuit">
+      <h2>Circuit</h2>
+      <div class="circuit-images">
+        <img src="images/circuit_a2.JPG">
+        <img src="images/circuit_a2_topview.jpg">
+        <p>Side view and top view of the circuit showing the RGB LED and pushbutton connections.</p>
+      </div>
+
+      <img src="images/circuit_operation_a3.GIF">
+      <p>
+        Each press of the button cycles the LED through its modes,
+        starting from red and transitioning between green, blue, and a color fade.
+      </p>
+    </div>
+
+    <div class="firmware">
+      <h2>Firmware</h2>
+      <a href="arduino/a2_fade.ino">Arduino Sketch for A3 Input Output</a>
+      <pre><code>
+      </code></pre>
+    </div>
+
+    <div class="questions">
+      <h2>Questions</h2>
+      <ol>
+        <div>
+          <strong><li>
+            In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other?
+            Justify your answer with example calculations.
+          </li></strong>
+          <p>
+          </p>
+        </div>
+
+        <div>
+          <strong><li>
+            Draw a graph where the x-axis is time and the y-axis is voltage.
+            Plot the voltage at V-measure of your voltage divider of your shared gif.
+          </li></strong>
+          <p>
+          </p>
+
+        </div>
+
+        <div>
+          <strong><li>
+            AnalogWrite and analogRead are respectively 8-bit and 10-bit values.
+            Imagine you had 10-bit PWM and a 16-bit analog-to-digital converter instead.
+            How would this change your map() code? Explain your answer.
+          </li></strong>
+          <p>
+          </p>
+        </div>
+
+      </ol>
+    </div>
+  </body>
+</html>
