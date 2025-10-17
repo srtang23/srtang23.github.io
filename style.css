@@ -188,12 +188,31 @@ pre {
   max-width: 100%;
 }
 
+/* Syntax highlighting for code blocks */
+pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  color: inherit;
+}
+
+/* Make comments more distinct - additional styling for pre elements */
+
+/* Style for comment lines - this will be applied via JavaScript */
+pre .comment {
+  color: #6a737d;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Inline code elements */
 code {
+  background: #f8f9fa;
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   font-size: 0.9rem;
-  color: #333;
+  color: #e74c3c;
 }
 
 .inline-code {

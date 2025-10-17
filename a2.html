@@ -7,6 +7,7 @@
     <title>Sophia's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
+    <script src="app.js"></script>
   </head>
   <body>
     <div class="back-button">
@@ -133,7 +134,7 @@ void loop() {
   lastButtonState = reading;
 }
 
-// takes three brightness values (0–255) and sets each LED color
+// takes three brightness values (0-255) and sets each LED color
 void setColor(int redVal, int greenVal, int blueVal) {
   analogWrite(redPin, redVal);  // sets brightness of the red LED
   analogWrite(greenPin, greenVal);  // sets brightness of the green LED

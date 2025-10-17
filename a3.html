@@ -7,6 +7,7 @@
     <title>Sophia's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
+    <script src="app.js"></script>
   </head>
   <body>
     <div class="back-button">
@@ -16,29 +17,149 @@
 
     <div class="schematic">
       <h2>Schematic</h2>
-      <img src="images/schematic_a2.jpeg">
+      <img src="images/schematic_a3.jpeg">
+      <p>
+        This circuit uses a voltage divider with a fixed resistor R1 and a photoresistor R2 to sense
+        and control the brightness of an RGB LED through the Arduino.
+        The V-measure is connected to the Arduino's analog input at A0.
+        As light intensity changes, this voltage also changes between 0 V and 5 V
+        since the circuit is powered by a 5 V input.
+        The RGB LED, with red, green, and blue pins, is connected to three PWM pins (11, 10, 9)
+        on the Arduino, allowing each color's brightness to be independently controlled.
+        The circuit shares a common ground between the LED and the voltage divider.
+      </p>
+      <h3>Resistor Calculation and Choices</h3>
+      <ol>
+        <li>
+          <p>
+            <strong>LEDs - </strong> With a 5 V supply and a desired current of 20 mA,
+            and given that red and green LEDs both have a voltage drop of 1.8 V,
+            and blue LED with a higher voltage drop of 3.3 V:
+          </p>
+          <ul>
+            <li>Red LED:  R = (5 V - 1.8 V) / 20 mA = 160 Ω</li>
+            <li>Green LED:  R = (5 V - 1.8 V) / 20 mA = 160 Ω</li>
+            <li>Blue LED:  R = (5 V - 3.3 V) / 20 mA = 85 Ω</li>
+          </ul>
+          <p>
+            So I chose a 220 Ω resistor for the red and green LEDs,
+            and a 100 Ω resistor for the blue LED, as these were the closest available values.
+          </p>
+        </li>
+        <li>
+          <p>
+            <strong>Fixed Resistor for voltage divider - </strong>
+            When I measured my photoresistor with a multimeter,
+            its resistance was around 15k Ω under natural lighting.
+            To choose the fixed resistor R1 for my voltage divider,
+            I selected a 10k Ω resistor, which is in the same range
+            as the resistance of my photoresistor.
+          </p>
+        </li>
+      </ol>
 
     </div>
 
     <div class="circuit">
       <h2>Circuit</h2>
       <div class="circuit-images">
-        <img src="images/circuit_a2.JPG">
-        <img src="images/circuit_a2_topview.jpg">
-        <p>Side view and top view of the circuit showing the RGB LED and pushbutton connections.</p>
+        <img src="images/circuit_a3.png">
+        <p>
+          The RGB LED is connected to Arduino PWM pins 11, 10, and 9 for color control,
+          while a voltage divider using a 10k Ω fixed resistor and a photoresistor
+          connects to analog pin A0 to measure light intensity.
+        </p>
       </div>
 
       <img src="images/circuit_operation_a3.GIF">
       <p>
-        Each press of the button cycles the LED through its modes,
-        starting from red and transitioning between green, blue, and a color fade.
+        The RGB LED cycles through red, green, and blue, each staying on for about two seconds.
+        As I hover my hand over the photoresistor, it blocks light, increasing its resistance
+        and raising V-measure closer to 5 V, which makes the LED appear brighter.
+        When I move my hand away, more light hits the sensor, the resistance drops, and the LED dims.
+        This pattern repeats for each color.
       </p>
     </div>
 
     <div class="firmware">
       <h2>Firmware</h2>
-      <a href="arduino/a2_fade.ino">Arduino Sketch for A3 Input Output</a>
+      <a href="arduino/a3_input_output.ino">Arduino Sketch for A3 Input Output</a>
       <pre><code>
+const int analogInPin = A0; // the analog input pin for the sensor
+const int ledPins[3] = {11, 10, 9}; // the digital output pins for the three LEDs (red, green, blue)
+
+int sensorValue;  // stores the averaged sensor value
+int mappedValue;  // stores the sensor value mapped to LED brightness
+int readings[10]; // array to hold a set of past 10 sensor readings for averaging
+long total = 0;  // running total of readings (used for averaging)
+int prevSensorValue = 0;  // stores the previous sensor value
+
+unsigned long start;  // store the start time
+
+void setup() {
+  // initialize each LED pin as an output
+  for (int ledPin : ledPins) {
+    pinMode(ledPin, OUTPUT);
+  }
+  Serial.begin(9600);   // start serial communication
+
+}
+
+void loop() {
+  // loop through each LED pin
+  for (int ledPin : ledPins) {
+    // turn off all LEDs before lighting up the current one
+    for (int ledPin : ledPins) {
+      analogWrite(ledPin, 0);
+    }
+
+    start = millis();  // record the current time as the start of this LED’s 2-second phase
+    // keep updating LED brightness for 2 seconds
+    while (millis() - start < 2000) {
+
+      averageReadings();  // calculate the average of recent sensor readings
+
+      // compute the average value by dividing the total by the number of readings
+      sensorValue = total / (sizeof(readings) / sizeof(readings[0]));
+
+      // constrain sensor values to the range 400–800 to filter out extreme values
+      sensorValue = constrain(sensorValue, 400, 800);
+
+      // map the sensor value (400–800) to LED brightness (0–255)
+      mappedValue = map(sensorValue, 400, 800, 0, 255);
+
+      // print out sensor and mapped values to the serial monitor
+      Serial.print("sensor = ");
+      Serial.print(sensorValue);
+      Serial.print("\t mapped = ");
+      Serial.println(mappedValue);
+
+      // set LED brightness based on mapped sensor value
+      analogWrite(ledPin, mappedValue);
+
+      delay(10);  // wait 10 ms before taking the next reading
+    }
+  }
+
+}
+
+// helper method to compute the average of multiple sensor readings
+void averageReadings() {
+  total = 0;  // reset total before new averaging loop
+
+  // loop through each slot in the readings array
+  for (int reading : readings) {
+    int sensorValue = analogRead(analogInPin);  // take a new analog reading from the sensor pin
+
+    // if the new reading spikes more than 2.5× the previous one, treat it as noise
+    if (prevSensorValue > 0 && sensorValue > 2.5 * prevSensorValue) {
+      sensorValue = prevSensorValue;  // replace spike with previous stable value
+    }
+    reading = sensorValue;   // assign the sensor value to the local variable for reading
+    total += sensorValue; // add the reading to the running total
+    prevSensorValue = sensorValue;  // store this reading as the previous one for the next iteration
+  }
+}
       </code></pre>
     </div>
 
@@ -51,6 +172,29 @@
             Justify your answer with example calculations.
           </li></strong>
           <p>
+            Yes, the variable resistor can be either R1 or R2.
+            For a voltage divider, V_out = V_in * R2/(R1+R2).
+            If the variable is R1, increasing R1 decreases V_out, and decreasing R1 increases V_out;
+            If the variable is R2, increasing R2 increases V_out, and decreasing R2 decreases V_out.
+            Assuming V_in = 5 V, the fixed resistor = 10k Ω, the variable resistor ranges from 1k to 10k Ω:
+            <ol>
+              <li>
+                R2 is the variable resistor, R1 = 10k Ω fixed:
+                <ul>
+                  <li>R2 = 1k Ω -> V_out ≈ 0.45 V</li>
+                  <li>R2 = 5k Ω -> V_out ≈ 1.67 V</li>
+                  <li>R2 = 10k Ω -> V_out ≈ 2.5 V</li>
+                </ul>
+              </li>
+              <li>
+                R1 is the variable resistor, R2 = 10k Ω fixed:
+                <ul>
+                  <li>R1 = 1k Ω -> V_out ≈ 4.55 V</li>
+                  <li>R1 = 5k Ω -> V_out ≈ 3.33 V</li>
+                  <li>R1 = 10k Ω -> V_out ≈ 2.5 V</li>
+                </ul>
+              </li>
+            </ol>
           </p>
         </div>
 
@@ -60,8 +204,15 @@
             Plot the voltage at V-measure of your voltage divider of your shared gif.
           </li></strong>
           <p>
+            The voltage divider in my circuit uses a fixed resistor as R1 and a photoresistor as R2.
+            As a result, increasing R2 increases V_out, and decreasing R2 decreases V_out.
+            When the photoresistor is exposed to bright light, its resistance decreases, causing V-measure to drop.
+            In my shared GIF, when I hover my hand and block the light,
+            the resistance of the photoresistor increases, making V-measure rise closer to 5 V
+            (since I used a 5 V power input).
+            This change happens every two-second interval for each LED color change in my code.
           </p>
-
+          <img src="images/voltage_time_graph_a3.jpeg" class="graph">
         </div>
 
         <div>
@@ -71,6 +222,13 @@
             How would this change your map() code? Explain your answer.
           </li></strong>
           <p>
+            If the system uses a 10-bit PWM and a 16-bit analog-to-digital converter,
+            I'd need to adjust the parameter values in my <code class="inline-code">map()</code> function.
+            A 10-bit PWM can output from 0 to 1,023 instead of 0 to 255,
+            A 16-bit analog-to-digital converter reads values from 0 to 65,535 instead of 0 to 1023.
+            So the same sensor voltage range that used to be 400-800 would now be scaled up by 64
+            (since 65,536 / 1,024 = 64), becoming roughly 25,600-51,200.
+            The new line of code would look like <code class="inline-code">map(sensorValue, 25600, 51200, 0, 1023)</code>.
           </p>
         </div>
 
