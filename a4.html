@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Sophia's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <script src="app.js"></script>
+  </head>
+  <body>
+    <div class="back-button">
+      <a href="index.html">Back</a>
+    </div>
+    <h1>A4: Libraries</h1>
+
+    <div class="schematic">
+      <h2>Schematic</h2>
+      <img src="images/schematic_a3.jpeg">
+    </div>
+
+    <div class="circuit">
+      <h2>Circuit</h2>
+      <div class="circuit-images">
+        <img src="images/circuit_a3.png">
+        <p>
+        </p>
+      </div>
+
+      <img src="images/circuit_operation_a3.GIF">
+      <p>
+      </p>
+    </div>
+
+    <div class="firmware">
+      <h2>Firmware</h2>
+      <a href="arduino/a4_libraries/a4_libraries.ino">Arduino Sketch for A4 Libraries</a>
+      <pre><code id="code-block">Loading code...</code></pre>
+    </div>
+
+    <div class="questions">
+      <h2>Questions</h2>
+      <ol>
+        <div>
+          <strong><li>
+            Say you are using a servo motor you attach to pin 9. In your loop() you have the following code:
+            <pre><code>
+void loop() {
+for (pos = 0; pos <= 180; pos += 1) {
+  myservo.write(pos);
+  delay(100);
+  }
+}
+          </code></pre>
+          Draw a graph with the x-axis as time and the y-axis as voltage at pin 9 with respect to ground.
+          </li></strong>
+          <p>
+          </p>
+        </div>
+
+        <div>
+          <strong><li>
+            Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time.
+            How can we address this? Answer in (pseudo)code.
+          </li></strong>
+          <p>
+          </p>
+        </div>
+
+        <div>
+          <strong><li>
+            Your input device is slightly noisy,
+            leading the measurement to randomly deviate from the true measurement up or down by 10%.
+            How can we address this? Answer in (pseudo)code.
+          </li></strong>
+          <p>
+          </p>
+        </div>
+
+      </ol>
+    </div>
+  </body>
+</html>
