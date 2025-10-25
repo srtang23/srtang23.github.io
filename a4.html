@@ -17,7 +17,18 @@
 
     <div class="schematic">
       <h2>Schematic</h2>
-      <img src="images/schematic_a3.jpeg">
+      <img src="images/schematic_a4.jpeg">
+      <p>
+        This schematic shows how the Arduino is connected to the keypad and LCD for my password-based lock system.
+        The 4x3 keypad connects its rows to pins 7, 6, A0, and A1, and its columns to pins A2-A4,
+        leaving out the unused C4 column from the keypad (so it's 4x3).
+        The 16x2 LCD is wired in 4-bit mode, with D4-D7 going to pins 2-5,
+        and RS and E connected to pins 12 and 11.
+        The V0 pin has a 2k Ω resistor connected to ground to adjust text brightness,
+        and a 220 Ω resistor is used between the LCD's backlight anode and 5 V to limit current
+        and control the backlight. Everything shares the same 5 V and ground.
+        The values of the resistors were chosen by testing with different resistor ranges,
+        and these two provided the best results for display contrast and backlight brightness.
     </div>
 
     <div class="circuit">
@@ -25,11 +36,24 @@
       <div class="circuit-images">
         <img src="images/circuit_a4.png">
         <p>
+          This circuit shows the full wiring setup of Arduino for my password-based lock system.
+          The 4x3 keypad on the left is connected to digital pins A0-A4 and pins 6-7 on the Arduino,
+          which are used to detect key presses. The 16x2 LCD on the right is wired to digital pins 2-5,
+          11, and 12 using the LiquidCrystal setup. A 10 kΩ potentiometer adjusts the screen contrast,
+          and a 220 Ω resistor controls the backlight brightness. The keypad acts as the input for entering the password,
+          while the LCD acts as an output that provides live feedback, including showing prompts,
+          asterisks for entered digits, and countdown messages during the lockout period.
         </p>
       </div>
 
       <img src="images/circuit_operation_a4.GIF">
       <p>
+        This project uses the <code>LiquidCrystal</code> and <code>Keypad</code>
+        libraries to replicate a password-based lock system.
+        The LCD prompts “ENTER PASSWORD” and waits for # to start.
+        After entering the 4-digit code, it checks whether it matches the preset password;
+        if not, you have up to three tries before the system locks for 10 seconds,
+        displaying a countdown on the screen before resetting the failed attempts.
       </p>
     </div>
 
@@ -37,6 +61,11 @@
       <h2>Firmware</h2>
       <a href="arduino/a4_libraries/a4_libraries.ino">Arduino Sketch for A4 Libraries</a>
       <pre><code id="code-block">Loading code...</code></pre>
+      <p><i>
+        * Some parts of the code were adapted from the built-in <code>LiquidCrystal</code>
+        and <code>Keypad</code> library examples.
+      </i></p>
+
     </div>
 
     <div class="questions">
@@ -55,7 +84,14 @@ for (pos = 0; pos <= 180; pos += 1) {
           </code></pre>
           Draw a graph with the x-axis as time and the y-axis as voltage at pin 9 with respect to ground.
           </li></strong>
+          <img src="images/voltage_time_graph_a4.jpeg" class="graph">
           <p>
+            The signal is a pulse train repeating every 20 ms (50 Hz),
+            with each pulse briefly rising to 5 V before dropping back to 0 V.
+            The pulse width varies between 1 ms and 2 ms, corresponding to the servo's position:
+            about 0° at 1 ms, 90° at 1.5 ms (center), and 180° at 2 ms.
+            Within the first 80 ms shown,
+            the pulse widens slightly from 1 ms to about 1.2 ms (it would be hard to tell the difference in the graph).
           </p>
         </div>
 
@@ -64,8 +100,19 @@ for (pos = 0; pos <= 180; pos += 1) {
             Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time.
             How can we address this? Answer in (pseudo)code.
           </li></strong>
-          <p>
-          </p>
+          <pre><code>
+Initialize count to 0
+Initialize an integer array readings that can hold 10 values
+
+While count is less than 10:
+  Take a new reading from the input device and append it to readings
+  Increment count by 1
+
+Sort readings from smallest to largest
+Compute the median by getting reading[count/2]
+
+Return the median
+          </code></pre>
         </div>
 
         <div>
@@ -74,8 +121,26 @@ for (pos = 0; pos <= 180; pos += 1) {
             leading the measurement to randomly deviate from the true measurement up or down by 10%.
             How can we address this? Answer in (pseudo)code.
           </li></strong>
-          <p>
-          </p>
+          <pre><code>
+// helper method to compute the average of multiple sensor readings
+
+Initialize totalReadings to 0
+Initialize an integer array readings that can hold 10 values
+Initialize prevInput to the first reading from the input device
+
+For each int reading in readings:
+  Take a new reading from the input device and store it as currInput
+
+    If currInput is greater than 2.5 times prevInput:
+        Set currInput to prevInput
+
+    Set reading to currInput
+    Add currInput to totalReadings
+    Set prevInput to currInput
+
+Compute the average as totalReadings divided by 10
+Return the average
+          </code></pre>
         </div>
 
       </ol>
