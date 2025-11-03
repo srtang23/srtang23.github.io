@@ -13,7 +13,52 @@
     <div class="back-button">
       <a href="index.html">Back</a>
     </div>
-    <h1>Final: Timely</h1>
-    <img src="images/final_proposal.png">
+    <h1>Final Project Proposal: Timely</h1>
+    <div class="subsection">
+      <h2>Project Concept/Motivation</h2>
+      <p>I want to build a desk-sized digital clock that shows the current time but also lets the user set a countdown timer and an alarm for specific times (like wake-up or study breaks). When the timer or alarm goes off, the buzzer will sound, or the LEDs will flash to notify.</p>
+      <img src="images/final_proposal.png">
+      <img src="images/final_proposal_sketch.png">
+    </div>
+    <div class="subsection">
+      <h2>Anticipated Bill of Materials</h2>
+      <ul>
+        <li>Arduino Uno (microcontroller)</li>
+        <li>1x 16x2 LCD display (for time, alarm, and timer display)</li>
+        <li>4x Push buttons (for mode selection, time set, and start/stop)</li>
+        <li>1x buzzer (for haptic alarm feedback)</li>
+        <li>1x RGB LED (for visual alarm feedback)</li>
+        <li>Resistors (for LED, button, LCD display)</li>
+        <li>Breadboard and jumper wires (to connect my wires and the microcontroller)</li>
+        <li>RTC (for real-time display)</li>
+        <li>Laser-cut wood or 3D-printed enclosure</li>
+      </ul>
+    </div>
+    <div class="subsection">
+      <h2>Timeline</h2>
+      <ul>
+        <li>Set up RTC module and display current time on LCD
+          <ul>
+            <li>If not using RTC, use Arduino millis() function as an alternative</li>
+          </ul>
+        </li>
+        <li>Build countdown timer function with buzzer and LED
+          <ul>
+            <li>If timer logic malfunctions, use a fixed demo duration</li>
+            <li>If buzzer failed, use LED for feedback only</li>
+          </ul>
+        </li>
+        <li>Add button controls for mode selections and implement alarm logic
+          <ul>
+            <li>If alarm is too complicated, do timer only</li>
+          </ul>
+        </li>
+        <li>Assembly the enclosure
+          <ul>
+            <li>If not laser-cut or 3D-printed, use simple cardboard</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
   </body>
 </html>
