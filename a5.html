@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Sophia's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <script src="app.js"></script>
+  </head>
+  <body>
+    <div class="back-button">
+      <a href="index.html">Back</a>
+    </div>
+    <h1>A5: High(er) voltage and transistors</h1>
+
+    <div class="subsection">
+      <h2>Schematic</h2>
+      <img src="images/schematic_a4.jpeg">
+    </div>
+
+    <div class="subsection">
+      <h2>Circuit</h2>
+      <div class="circuit-images">
+        <img src="images/circuit_a5_topview.JPG">
+        <img src="images/circuit_a5_closeup.JPG">
+        <p>
+          This circuit shows the Arduino connected to both the IR receiver
+          and the N-MOSFET that drives the LED strip.
+          The IR receiver's output goes to digital pin 6,
+          with its VCC connected to 5V and its GND connected to ground.
+          The MOSFET's gate is connected to digital pin 4,
+          the drain is clipped to the LED strip's negative lead,
+          and the source goes to ground.
+          The LED strip's positive lead is clipped to the positive terminal of the barrel jack,
+          and its negative lead goes to the barrel jack's ground.
+          The barrel jack is powered by an external AC adapter,
+          and everything shares the same ground.
+        </p>
+      </div>
+
+      <img src="images/circuit_operation_a5.GIF">
+      <p>Pressing the power button on the remote control toggles the LED strip on and off, and triggers a fade effect when the LED strip is on.</p>
+    </div>
+
+    <div class="subsection">
+      <h2>Firmware</h2>
+      <a href="arduino/a5_higher_voltage_and_transistors/a5_higher_voltage_and_transistors.ino">Arduino Sketch for A5 High(er) voltage and transistors</a>
+      <pre><code>#include <IRremote.hpp> // library to read IR remote signals
+
+const int MOSFET_PIN = 4; // pin that drives the MOSFET gate
+const int IR_RECEIVE_PIN = 6; // IR receiver output pin
+
+const int POWER_BUTTON = 69; // IR command value for the remote's POWER button
+
+int brightness = 0; // LED brightness (0-255)
+int fadeAmount = 5; // how much brightness changes each loop
+bool fading = false; // toggle state for fading
+
+
+void setup() {
+  pinMode(MOSFET_PIN, OUTPUT); // set MOSFET gate as output
+  analogWrite(MOSFET_PIN, 0); // start with LED completely off
+  IrReceiver.begin(IR_RECEIVE_PIN, ENABLE_LED_FEEDBACK); // start the IR receiver
+
+}
+
+void loop() {
+  // check if an IR signal is received:
+  if (IrReceiver.decode()) {
+    int cmd = IrReceiver.decodedIRData.command; // retrieve command value
+    bool repeat = IrReceiver.decodedIRData.flags & IRDATA_FLAGS_IS_REPEAT; // detect long-press repeat signals
+
+    // if it's a real button press AND it's the POWER button
+    if (!repeat && cmd == POWER_BUTTON) {
+
+      fading = !fading; // toggle fading on/off
+
+      if (!fading) {
+        analogWrite(MOSFET_PIN, 0);  // turn off when stopping
+      }
+    }
+    IrReceiver.resume(); // get ready to receive the next IR packet
+  }
+  // if fading is turned on:
+  if (fading) {
+    analogWrite(MOSFET_PIN, brightness); // set the brightness of MOSFET_PIN
+    brightness += fadeAmount; // change the brightness for next time through the loop:
+
+    // reverse fade direction at ends:
+    if (brightness <= 0 || brightness >= 255) {
+      fadeAmount = -fadeAmount;
+    }
+    delay(10);  // fade speed
+  }
+}</code></pre>
+      <p><i>
+        * Some parts of the code were adapted from the Arduino built-in example Fade and IRremote guide provided in the slide deck.
+      </i></p>
+
+    </div>
+
+    <div class="subsection">
+      <h2>Questions</h2>
+      <ol>
+        <div>
+          <strong><li>
+          What is the absolute maximum amount of current between pins 2 and 3?
+          </li></strong>
+          <p>The absolute maximum amount of current between pins 2 and 3 is 37.2 A.</p>
+        </div>
+
+        <div>
+          <strong><li>
+            Draw a schematic for a circuit with using at least your arduino, a DC motor, a flyback diode, and capacitors between power and ground. Find parts with datasheets you could use for each of these schematic components.
+          </li></strong>
+          <img src="images/q2_schematic_a5.jpeg">
+          <p>
+            This circuit uses an N-MOSFET transistor to switch a DC motor on and off from the Arduino.
+            The motor is powered by a separate 9 V supply. A flyback diode is placed across the motor to catch the big voltage spike the motor makes when it turns off.
+            The two capacitors (100 µF and 0.1 µF), where two clean out different frequencies of noise, are connected between the motor's supply and ground to smooth out noise.
+            digital pin 9 drives the MOSFET gate, and everything shares the same ground.
+          </p>
+        </div>
+
+        <div>
+          <strong><li>
+            Draw a schematic using at least your arduino, this chip, and two motors. Write (pseudo) code that shows how you would move the motors both forward, both back, then one forward one back, and one back then forward.
+          </li></strong>
+          <img src="images/q3_schematic_a5.jpeg">
+          <pre><code>
+// pins
+m1_in1 = 2;
+m1_in2 = 3;
+m1_en  = 9;
+
+m2_in1 = 4;
+m2_in2 = 5;
+m2_en  = 10;
+
+// setup
+setup:
+  set all m1_in1, m1_in2, m2_in1, m2_in2 as OUTPUT
+  set m1_en and m2_en as OUTPUT
+
+  set m1_en and m2_en to HIGH using digitalWrite
+
+loop:
+  // both motors forward
+  set m1_in1 to HIGH
+  set m1_in2 to LOW
+  set m2_in1 to HIGH
+  set m2_in2 to LOW
+  delay 2000 ms
+
+  // both motors backward
+  set m1_in1 to LOW
+  set m1_in2 to HIGH
+  set m2_in1 to LOW
+  set m2_in2 to HIGH
+  delay 2000 ms
+
+  // m1 forward, m2 backward
+  set m1_in1 to HIGH
+  set m1_in2 to LOW
+  set m2_in1 to LOW
+  set m2_in2 to HIGH
+  delay 2000 ms
+
+  // m1 backward, m2 forward
+  set m1_in1 to LOW
+  set m1_in2 to HIGH
+  set m2_in1 to HIGH
+  set m2_in2 to LOW
+  delay 2000 ms
+
+  set m1_en and m2_en to LOW using digitalWrite
+  delay 2000 ms
+          </code></pre>
+        </div>
+
+        <div>
+          <strong><li>
+            Did you use AI tools in completing this assignment? If yes, please provide details on how/when, as well as a brief reflection. If you used an LLM, please 'share' your conversation and include it as part of your submission, or cite the prompt(s) you used and the output. If no, you can either leave this question blank, or provide other information if you'd like.?
+          </li></strong>
+          <p>
+            I used Cursor.ai to help fix the issue where my a5 code snippet wasn't showing up on the page.
+          </p>
+          <img src="images/ai_output_a5.png">
+        </div>
+
+      </ol>
+    </div>
+  </body>
+</html>
