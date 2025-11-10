@@ -37,7 +37,12 @@ function getCodeFileName(assignmentNumber) {
  */
 function loadCodeFile(codeFileName) {
   fetch(codeFileName)
-    .then(response => response.text())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
     .then(text => {
       const codeBlock = document.getElementById('code-block');
       if (codeBlock) {
@@ -48,7 +53,7 @@ function loadCodeFile(codeFileName) {
     .catch(error => {
       const codeBlock = document.getElementById('code-block');
       if (codeBlock) {
-        codeBlock.textContent = 'Error loading code file';
+        codeBlock.textContent = 'Error loading code file: ' + error.message;
       }
       console.error('Error loading code:', error);
     });
