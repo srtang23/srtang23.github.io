@@ -57,7 +57,15 @@ function loadCodeFile(codeFileName) {
     .catch(error => {
       const codeBlock = document.getElementById('code-block');
       if (codeBlock) {
-        codeBlock.textContent = 'Error loading code file: ' + error.message;
+        // Only show error if code block is empty or still loading
+        // If it already has embedded code, leave it alone
+        const currentContent = codeBlock.textContent.trim();
+        if (!currentContent || currentContent === 'Loading code...') {
+          codeBlock.textContent = 'Error loading code file: ' + error.message;
+        } else {
+          // Code already exists (embedded), just log the error
+          console.warn('Failed to fetch code file, using embedded code:', error.message);
+        }
       }
       console.error('Error loading code:', error);
       console.error('Failed to fetch:', codeFileName);
