@@ -21,7 +21,8 @@ function getCodeFileName(assignmentNumber) {
     '1': 'arduino/a1_blink.ino',
     '2': 'arduino/a2_fade.ino',
     '3': 'arduino/a3_input_output/a3_input_output.ino',
-    '4': 'arduino/a4_libraries/a4_libraries.ino'
+    '4': 'arduino/a4_libraries/a4_libraries.ino',
+    '5': 'arduino/a5_higher_voltage_and_transistors/a5_higher_voltage_and_transistors.ino'
   };
 
   return fileMap[assignmentNumber] || `arduino/a${assignmentNumber}_blink.ino`;
