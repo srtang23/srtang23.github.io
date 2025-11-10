@@ -17,7 +17,18 @@
 
     <div class="subsection">
       <h2>Schematic</h2>
-      <img src="images/schematic_a4.jpeg">
+      <img src="images/schematic_a5.jpeg">
+      <p>
+        This schematic shows the Arduino connected to both the IR receiver
+        and the N-MOSFET that drives the LED strip with 12V power supply.
+        MOSFET gate connects to digital pin 4, drain connected to the LED strip's negative terminal and its source to ground.
+        The IR receiver's signal pin connects to digital pin 6,
+        with its VCC connected to 5V and its GND connected to ground. All grounds are shared.
+        <br>
+        <br>
+        The LED strip's The MOSFET I'm using has a continuous drain current rating above 10 A,
+        which is much higher than my LED strip's 1.5 A load, so it should be able to handle the load.
+      </p>
     </div>
 
     <div class="subsection">
@@ -185,9 +196,11 @@ loop:
             Did you use AI tools in completing this assignment? If yes, please provide details on how/when, as well as a brief reflection. If you used an LLM, please 'share' your conversation and include it as part of your submission, or cite the prompt(s) you used and the output. If no, you can either leave this question blank, or provide other information if you'd like.?
           </li></strong>
           <p>
-            I used Cursor.ai to help fix the issue where my a5 code snippet wasn't showing up on the page.
+            I used Cursor.ai to help fixing the code file fetching issue by embedding the code snippet directly into each html page.
+            Nothing in the code file was changed by ai, just used to debug fetching issue but failed, then I gave up and ask AI to embed the code snippet directly into each html page since it was easier that way.
           </p>
-          <img src="images/ai_output_a5.png">
+          <img src="images/ai_output_1_a5.png">
+          <img src="images/ai_output_2_a5.png">
         </div>
 
       </ol>
