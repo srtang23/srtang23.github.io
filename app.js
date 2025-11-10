@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (pageNumber) {
     const assignmentNumber = pageNumber[1];
     const codeFileName = getCodeFileName(assignmentNumber);
+    console.log('Loading code file:', codeFileName);
     loadCodeFile(codeFileName);
   }
 });
@@ -36,14 +37,17 @@ function getCodeFileName(assignmentNumber) {
  * @param {string} codeFileName - Path to the code file
  */
 function loadCodeFile(codeFileName) {
+  console.log('Fetching:', codeFileName);
   fetch(codeFileName)
     .then(response => {
+      console.log('Response status:', response.status);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return response.text();
     })
     .then(text => {
+      console.log('Code loaded successfully, length:', text.length);
       const codeBlock = document.getElementById('code-block');
       if (codeBlock) {
         codeBlock.textContent = text;
@@ -56,6 +60,7 @@ function loadCodeFile(codeFileName) {
         codeBlock.textContent = 'Error loading code file: ' + error.message;
       }
       console.error('Error loading code:', error);
+      console.error('Failed to fetch:', codeFileName);
     });
 }
 
