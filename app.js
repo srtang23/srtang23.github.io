@@ -1,6 +1,9 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Apply syntax highlighting to all code blocks on the page
+  applySyntaxHighlighting();
+
   const currentPage = window.location.pathname.split('/').pop();
   const pageNumber = currentPage.match(/a(\d+)/);
 
