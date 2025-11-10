@@ -163,30 +163,35 @@ loop:
   set m1_in2 to LOW
   set m2_in1 to HIGH
   set m2_in2 to LOW
+  set m1_en and m2_en speed to 255 using analogWrite
   delay 2000 ms
 
   // both motors backward
-  set m1_in1 to LOW
-  set m1_in2 to HIGH
-  set m2_in1 to LOW
-  set m2_in2 to HIGH
+  set m1_in1 to LOW using digitalWrite
+  set m1_in2 to HIGH using digitalWrite
+  set m2_in1 to LOW using digitalWrite
+  set m2_in2 to HIGH using digitalWrite
+  set m1_en and m2_en speed to 255 using analogWrite
   delay 2000 ms
 
   // m1 forward, m2 backward
-  set m1_in1 to HIGH
-  set m1_in2 to LOW
-  set m2_in1 to LOW
-  set m2_in2 to HIGH
+  set m1_in1 to HIGH using digitalWrite
+  set m1_in2 to LOW using digitalWrite
+  set m2_in1 to LOW using digitalWrite
+  set m2_in2 to HIGH using digitalWrite
+  set m1_en and m2_en speed to 255 using analogWrite
   delay 2000 ms
 
   // m1 backward, m2 forward
-  set m1_in1 to LOW
-  set m1_in2 to HIGH
-  set m2_in1 to HIGH
-  set m2_in2 to LOW
+  set m1_in1 to LOW using digitalWrite
+  set m1_in2 to HIGH using digitalWrite
+  set m2_in1 to HIGH using digitalWrite
+  set m2_in2 to LOW using digitalWrite
+  set m1_en and m2_en speed to 255 using analogWrite
   delay 2000 ms
 
   set m1_en and m2_en to LOW using digitalWrite
+  set m1_en and m2_en speed to 0 using analogWrite
   delay 2000 ms
           </code></pre>
         </div>
