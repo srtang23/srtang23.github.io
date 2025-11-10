@@ -1,4 +1,4 @@
-#include <IRremote.hpp> //// library to read IR remote signals
+#include <IRremote.hpp> // library to read IR remote signals
 
 const int MOSFET_PIN = 4; // pin that drives the MOSFET gate
 const int IR_RECEIVE_PIN = 6; // IR receiver output pin
@@ -6,8 +6,8 @@ const int IR_RECEIVE_PIN = 6; // IR receiver output pin
 const int POWER_BUTTON = 69; // IR command value for the remote’s POWER button
 
 int brightness = 0; // LED brightness (0-255)
-int fadeAmount = 5;             // how much brightness changes each loop
-bool fading = false;            // toggle state for fading
+int fadeAmount = 5; // how much brightness changes each loop
+bool fading = false; // toggle state for fading
 
 
 void setup() {
