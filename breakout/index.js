@@ -31,7 +31,7 @@ function setup() {
   displayMode('centered'); // center canvas on page
 
   // text setup
-  textFont("system-ui", 50);
+  textFont("Press Start 2P", 30);
   textStyle(BOLD);
   textAlign(CENTER, CENTER);
 
@@ -215,12 +215,12 @@ function drawInstruction() {
 
   // Level at top-left
   textAlign(LEFT, TOP);
-  textSize(20);
+  textSize(14);
   text(`Level: ${level}`, 20, canvas.h - 60);
 
   // Lives at top-right
   textAlign(RIGHT, TOP);
-  textSize(20);
+  textSize(14);
   text(`Lives: ${lives}`, canvas.w - 20, canvas.h - 60);
 
   // Flashing instruction in center when game is stopped
@@ -230,7 +230,7 @@ function drawInstruction() {
 
     fill(255, 255, 255, opacity);
     textAlign(CENTER, CENTER);
-    textSize(28);
+    textSize(22);
     text("Press joystick button to begin", canvas.w / 2, canvas.h / 2);
   }
 }
