@@ -1,5 +1,4 @@
 
-// ----- Serial + joystick variables -----
 const BAUD_RATE = 9600;   // must match Arduino
 const MAX_DIST = 512;     // max joystick distance from center
 
@@ -70,17 +69,17 @@ function draw() {
 
   // Ball falls off bottom - lose a life
   if (ball.y - ball.d / 2 > canvas.h) {
-    sendLedCommand('R'); // miss = red LED
+    sendCommand('F'); // F = fail/miss = buzzer sound
     lives--;
 
     if (lives <= 0) {
-      // Game over - reset everything
+      // Game over -> reset everything
       gameStarted = false;
       ball.speed = 0;
       level = 1;
       lives = 3;
     } else {
-      // Still have lives - reset ball
+      // Still have lives -> reset ball
       resetBall();
     }
   }
@@ -157,23 +156,22 @@ function init() {
 
   paddle = new Sprite(canvas.w / 2, canvas.h - 40, paddleWidth, paddleHeight);
   paddle.rotationLock = true;
-  paddle.collider = 'kinematic';   // <- not affected by forces / collisions
-  paddle.y = canvas.h - 20;        // <- make sure it starts at fixed y
-  paddle.color = 'lightgrey';      // Light blue color for paddle
+  paddle.collider = 'kinematic';   //  not affected by forces / collisions
+  paddle.y = canvas.h - 20;        //  make sure it starts at fixed y
+  paddle.color = 'lightgrey';
 
   ball = new Sprite(canvas.w / 2, canvas.h - 200, 20);
   ball.bounciness = 1;
   ball.friction = 0;
   ball.speed = 0; // will be set when game starts
-  ball.color = 'lightgrey';            // White color for ball
+  ball.color = 'lightgrey';
 
   // Ball hits a brick
   ball.collides(bricks, (ball, brick) => {
     brick.remove();
-    sendLedCommand('G');   // success = green LED
   });
 
-  // Ball hits paddle → adjust bounce
+  // Ball hits paddle -> adjust bounce
   ball.collides(paddle, (ball, paddle) => {
     ball.direction += (ball.x - paddle.x) / 2;
     ball.speed = 8;
@@ -194,7 +192,7 @@ function createBricks() {
       '==========',
       '==========',
     ],
-    47,  // x position - centered with wall spacing
+    47,  // x position
     25,  // y position
     bricks.w + 4,  // spacing between bricks horizontally
     bricks.h + 4   // spacing between bricks vertically
@@ -235,7 +233,6 @@ function drawInstruction() {
   }
 }
 
-
 function updatePaddleFromJoystick() {
   if (isNaN(joyX)) return;
 
@@ -257,8 +254,8 @@ function updatePaddleFromJoystick() {
   paddle.x = constrain(paddle.x, leftLimit, rightLimit);
 }
 
-// Send LED command to Arduino
-function sendLedCommand(cmd) {
+// Send command to Arduino
+function sendCommand(cmd) {
   const portIsOpen = checkPort();
   if (!portIsOpen) return;
   port.write(cmd + "\n");
